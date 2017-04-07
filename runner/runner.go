@@ -1,22 +1,21 @@
 package runner
 
 import (
+	"bytes"
 	"github.com/peco/peco"
 	"github.com/yamayo/ec2ssh/internal/util"
+	"golang.org/x/net/context"
 	"io/ioutil"
 	"os"
-	"golang.org/x/net/context"
-	"bytes"
 	// "fmt"
 )
 
 type Runner struct {
-	tmpFile    *os.File
+	tmpFile *os.File
 }
 
 func NewRunner() *Runner {
-	return &Runner{
-	}
+	return &Runner{}
 }
 
 func (r *Runner) Transform(data string) (string, error) {
@@ -43,7 +42,7 @@ func (r *Runner) Transform(data string) (string, error) {
 		}
 	}()
 
-	err := <- blocker
+	err := <-blocker
 
 	switch {
 	case util.IsCollectResultsError(err):

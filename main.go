@@ -1,30 +1,30 @@
 package main
 
 import (
+	"bytes"
 	"flag"
+	"fmt"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/yamayo/ec2ssh/runner"
+	"net/url"
 	"os"
 	"os/exec"
-	"fmt"
-	"github.com/yamayo/ec2ssh/runner"
-	"bytes"
-	"net/url"
-	"strings"
 	"strconv"
+	"strings"
 	"text/tabwriter"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
 const ServerAliveInterval = 200
 
 var (
-	region *string = flag.String("region", "ap-northeast-1", "The region to use. Overrides AWS config/env settings.")
-	user *string = flag.String("user", "ec2-user", "Login user name.")
-	key *string = flag.String("i", "", "Selects a file from which the identity (private key) for public key authentication is read.")
-	profile *string = flag.String("profile", "default", "")
-	aliveInterval *int = flag.Int("interval", ServerAliveInterval, "")
+	region        *string = flag.String("region", "ap-northeast-1", "The region to use. Overrides AWS config/env settings.")
+	user          *string = flag.String("user", "ec2-user", "Login user name.")
+	key           *string = flag.String("i", "", "Selects a file from which the identity (private key) for public key authentication is read.")
+	profile       *string = flag.String("profile", "default", "")
+	aliveInterval *int    = flag.Int("interval", ServerAliveInterval, "")
 )
 
 var Usage = func() {
@@ -40,19 +40,19 @@ func main() {
 		Credentials: cred,
 	})
 	if err != nil {
-	    panic(err)
+		panic(err)
 	}
 	svc := ec2.New(sess, &aws.Config{Region: aws.String(*region)})
 	params := &ec2.DescribeInstancesInput{
-        Filters: []*ec2.Filter{
-            &ec2.Filter{
-                Name: aws.String("instance-state-name"),
-                Values: []*string{
-                    aws.String("running"),
-                },
-            },
-        },
-    }
+		Filters: []*ec2.Filter{
+			&ec2.Filter{
+				Name: aws.String("instance-state-name"),
+				Values: []*string{
+					aws.String("running"),
+				},
+			},
+		},
+	}
 	resp, err := svc.DescribeInstances(params)
 	if err != nil {
 		panic(err)
@@ -64,20 +64,20 @@ func main() {
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
 			var name string
-            for _, t := range inst.Tags {
-                if *t.Key == "Name" {
-                    name = url.QueryEscape(*t.Value)
-                }
-            }
+			for _, t := range inst.Tags {
+				if *t.Key == "Name" {
+					name = url.QueryEscape(*t.Value)
+				}
+			}
 
-			if (name == "" && inst.PublicDnsName != nil) {
+			if name == "" && inst.PublicDnsName != nil {
 				name = *inst.PublicDnsName
 			}
-			if (name == "" && inst.PrivateDnsName != nil) {
+			if name == "" && inst.PrivateDnsName != nil {
 				name = *inst.PrivateDnsName
 			}
 			var publicIp = ""
-			if (inst.PublicIpAddress != nil) {
+			if inst.PublicIpAddress != nil {
 				publicIp = *inst.PublicIpAddress
 			}
 
@@ -90,8 +90,8 @@ func main() {
 	pf := runner.NewRunner()
 	selected, err := pf.Transform(buffer.String())
 	if err != nil {
-	  fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-	  os.Exit(1)
+		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		os.Exit(1)
 	}
 
 	if len(selected) == 0 {
@@ -104,8 +104,8 @@ func main() {
 		*key = "~/.ssh/" + words[5] + ".pem"
 	}
 
-	option := "ServerAliveInterval="+strconv.Itoa(*aliveInterval)
-	cmd := exec.Command("ssh", "-i", *key, *user + "@" + ip, "-o", option)
+	option := "ServerAliveInterval=" + strconv.Itoa(*aliveInterval)
+	cmd := exec.Command("ssh", "-i", *key, *user+"@"+ip, "-o", option)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
