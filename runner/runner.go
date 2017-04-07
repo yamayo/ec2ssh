@@ -2,12 +2,12 @@ package runner
 
 import (
 	"bytes"
+	"io/ioutil"
+	"os"
+
 	"github.com/peco/peco"
 	"github.com/yamayo/ec2ssh/internal/util"
 	"golang.org/x/net/context"
-	"io/ioutil"
-	"os"
-	// "fmt"
 )
 
 type Runner struct {

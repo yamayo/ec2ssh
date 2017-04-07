@@ -4,17 +4,18 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/credentials"
-	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/service/ec2"
-	"github.com/yamayo/ec2ssh/runner"
 	"net/url"
 	"os"
 	"os/exec"
 	"strconv"
 	"strings"
 	"text/tabwriter"
+
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	"github.com/yamayo/ec2ssh/runner"
 )
 
 const ServerAliveInterval = 200
