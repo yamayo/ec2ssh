@@ -58,9 +58,9 @@ func main() {
 		panic(err)
 	}
 
-  	w := new(tabwriter.Writer)
+	w := new(tabwriter.Writer)
 	buffer := &bytes.Buffer{}
-  	w.Init(buffer, 4, 4, 4, '\t', 0)
+	w.Init(buffer, 4, 4, 4, '\t', 0)
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
 			var name string
@@ -90,8 +90,8 @@ func main() {
 	pf := runner.NewRunner()
 	selected, err := pf.Transform(buffer.String())
 	if err != nil {
-	  fmt.Printf("Error was occured: %v\n", err)
-	  return
+	  fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+	  os.Exit(1)
 	}
 
 	if len(selected) == 0 {
@@ -99,7 +99,6 @@ func main() {
 	}
 
 	words := strings.Fields(selected)
-	fmt.Printf("Selected from peco: %s\n", words[0])
 	ip := words[1]
 	if len(*key) == 0 {
 		*key = "~/.ssh/" + words[5] + ".pem"
@@ -113,4 +112,3 @@ func main() {
 
 	cmd.Run()
 }
-
