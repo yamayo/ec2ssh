@@ -4,12 +4,12 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strconv"
-	"strings"
+	// "strconv"
+	// "strings"
 
-	"github.com/yamayo/ec2ssh/config"
+	// "github.com/yamayo/ec2ssh/config"
 	"github.com/yamayo/ec2ssh/ec2"
-	"github.com/yamayo/ec2ssh/runner"
+	// "github.com/yamayo/ec2ssh/runner"
 )
 
 const ServerAliveInterval = 200
@@ -33,35 +33,13 @@ func main() {
 	ec2 := ec2.NewClient(*profile, *region)
 	instances, err := ec2.GetRunInstances()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+		fmt.Fprintf(os.Stderr, "error: %s\n", err)
 		os.Exit(1)
 	}
 
-	fmt.Println("instances: ", instances)
-
-	// cred := credentials.NewSharedCredentials("", *profile)
-	// sess, err := session.NewSession(&aws.Config{
-	// 	Credentials: cred,
-	// })
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// svc := ec2.New(sess, &aws.Config{Region: aws.String(*region)})
-	// params := &ec2.DescribeInstancesInput{
-	// 	Filters: []*ec2.Filter{
-	// 		&ec2.Filter{
-	// 			Name: aws.String("instance-state-name"),
-	// 			Values: []*string{
-	// 				aws.String("running"),
-	// 			},
-	// 		},
-	// 	},
-	// }
-	// resp, err := svc.DescribeInstances(params)
-	// if err != nil {
-	// 	panic(err)
-	// }
-
+	for _, inst := range instances {
+		fmt.Println("instances: ", inst)
+	}
 	// w := new(tabwriter.Writer)
 	// buffer := &bytes.Buffer{}
 	// w.Init(buffer, 4, 4, 4, '\t', 0)
@@ -94,24 +72,24 @@ func main() {
 	// }
 	// w.Flush()
 
-	pf := runner.NewRunner()
-	selected, err := pf.Transform(buffer.String())
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-		os.Exit(1)
-	}
+	// pf := runner.NewRunner()
+	// selected, err := pf.Transform(buffer.String())
+	// if err != nil {
+	// 	fmt.Fprintf(os.Stderr, "Error: %s\n", err)
+	// 	os.Exit(1)
+	// }
 
-	if len(selected) == 0 {
-		os.Exit(0)
-	}
+	// if len(selected) == 0 {
+	// 	os.Exit(0)
+	// }
 
-	words := strings.Fields(selected)
-	ip := words[1]
-	if len(*key) == 0 {
-		*key = "~/.ssh/" + words[5] + ".pem"
-	}
+	// words := strings.Fields(selected)
+	// ip := words[1]
+	// if len(*key) == 0 {
+	// 	*key = "~/.ssh/" + words[5] + ".pem"
+	// }
 
-	config := &config.SSHConfig{User: *user, Port: *port, IdentityFile: *key}
-	option := "ServerAliveInterval=" + strconv.Itoa(*aliveInterval)
-	ssh.Run(instance, config)
+	// config := &config.SSHConfig{User: *user, Port: *port, IdentityFile: *key}
+	// option := "ServerAliveInterval=" + strconv.Itoa(*aliveInterval)
+	// ssh.Run(instance, config)
 }
