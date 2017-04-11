@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
+	"text/tabwriter"
 	// "strconv"
 	// "strings"
 
@@ -37,9 +39,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	w := new(tabwriter.Writer)
+	buffer := &bytes.Buffer{}
+	w.Init(buffer, 4, 4, 4, '\t', 0)
 	for _, inst := range instances {
 		fmt.Println("instances: ", inst)
+		fmt.Fprintln(w, *inst)
+		fmt.Println(ec2.Convert(inst))
+		// fmt.Fprintln(w, strings.Join(inst.([]string), "\t"))
 	}
+	w.Flush()
+	fmt.Println(buffer)
 	// w := new(tabwriter.Writer)
 	// buffer := &bytes.Buffer{}
 	// w.Init(buffer, 4, 4, 4, '\t', 0)

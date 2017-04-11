@@ -32,6 +32,14 @@ type Instance struct {
 	KeyName      string
 }
 
+// func (inst Instance) String() string {
+// 	return inst.([]string)
+// }
+
+func Convert(aa interface{}) []string {
+	return aa.([]string)
+}
+
 func (c *Client) GetRunInstances() ([]*Instance, error) {
 	params := &ec2.DescribeInstancesInput{
 		Filters: runFilter(),
