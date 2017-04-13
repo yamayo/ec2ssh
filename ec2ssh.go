@@ -5,13 +5,12 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"reflect"
+	"strings"
 	"text/tabwriter"
-	// "strconv"
-	// "strings"
 
-	// "github.com/yamayo/ec2ssh/config"
 	"github.com/yamayo/ec2ssh/ec2"
-	// "github.com/yamayo/ec2ssh/runner"
+	"github.com/yamayo/ec2ssh/peco"
 )
 
 const ServerAliveInterval = 200
@@ -21,13 +20,9 @@ var (
 	region        *string = flag.String("region", "ap-northeast-1", "The region to use. Overrides AWS config/env settings.")
 	user          *string = flag.String("user", "ec2-user", "Login user name.")
 	key           *string = flag.String("i", "", "Selects a file from which the identity (private key) for public key authentication is read.")
+	port          *string = flag.String("port", "", "Port")
 	aliveInterval *int    = flag.Int("interval", ServerAliveInterval, "")
 )
-
-var Usage = func() {
-	fmt.Fprintf(os.Stderr, "Usage of %s:\n", os.Args[0])
-	flag.PrintDefaults()
-}
 
 func main() {
 	flag.Parse()
@@ -43,55 +38,25 @@ func main() {
 	buffer := &bytes.Buffer{}
 	w.Init(buffer, 4, 4, 4, '\t', 0)
 	for _, inst := range instances {
-		fmt.Println("instances: ", inst)
-		fmt.Fprintln(w, *inst)
-		fmt.Println(ec2.Convert(inst))
-		// fmt.Fprintln(w, strings.Join(inst.([]string), "\t"))
+		v := reflect.ValueOf(*inst)
+		values := make([]string, v.NumField())
+		for i := 0; i < v.NumField(); i++ {
+			values[i] = v.Field(i).String()
+		}
+
+		fmt.Fprintln(w, strings.Join(values, "\t"))
 	}
 	w.Flush()
-	fmt.Println(buffer)
-	// w := new(tabwriter.Writer)
-	// buffer := &bytes.Buffer{}
-	// w.Init(buffer, 4, 4, 4, '\t', 0)
-	// // info := []string{"Name", "PublicIp", "PrivateIp", "InstanceId", "InstanceType", "KeyName"}
-	// // fmt.Fprintln(w, strings.Join(info, "\t"))
-	// for idx, _ := range resp.Reservations {
-	// 	for _, inst := range resp.Reservations[idx].Instances {
-	// 		var name string
-	// 		for _, t := range inst.Tags {
-	// 			if *t.Key == "Name" {
-	// 				name = url.QueryEscape(*t.Value)
-	// 				break
-	// 			}
-	// 		}
 
-	// 		if name == "" && inst.PublicDnsName != nil {
-	// 			name = *inst.PublicDnsName
-	// 		}
-	// 		if name == "" && inst.PrivateDnsName != nil {
-	// 			name = *inst.PrivateDnsName
-	// 		}
-	// 		var publicIp string
-	// 		if inst.PublicIpAddress != nil {
-	// 			publicIp = *inst.PublicIpAddress
-	// 		}
-
-	// 		instance := []string{name, publicIp, *inst.PrivateIpAddress, *inst.InstanceId, *inst.InstanceType, *inst.KeyName}
-	// 		fmt.Fprintln(w, strings.Join(instance, "\t"))
-	// 	}
-	// }
-	// w.Flush()
-
-	// pf := runner.NewRunner()
-	// selected, err := pf.Transform(buffer.String())
-	// if err != nil {
-	// 	fmt.Fprintf(os.Stderr, "Error: %s\n", err)
-	// 	os.Exit(1)
-	// }
-
-	// if len(selected) == 0 {
-	// 	os.Exit(0)
-	// }
+	pec := peco.NewRunner()
+	selected, err := pec.Transform(buffer.String())
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "error: %s\n", err)
+		os.Exit(1)
+	}
+	if len(selected) == 0 {
+		os.Exit(0)
+	}
 
 	// words := strings.Fields(selected)
 	// ip := words[1]
@@ -99,7 +64,18 @@ func main() {
 	// 	*key = "~/.ssh/" + words[5] + ".pem"
 	// }
 
-	// config := &config.SSHConfig{User: *user, Port: *port, IdentityFile: *key}
-	// option := "ServerAliveInterval=" + strconv.Itoa(*aliveInterval)
-	// ssh.Run(instance, config)
+	// // config := &config.SSHConfig{User: *user, Port: *port, IdentityFile: *key}
+	// // option := "ServerAliveInterval=" + strconv.Itoa(*aliveInterval)
+	// // ssh.Run(instance, config)
+	// target := []string{
+	// 	"-i", *key,
+	// 	*user + "@" + words[2] + ":" + *port,
+	// }
+
+	// cmd := exec.Command("ssh", target)
+	// cmd.Stdin = os.Stdin
+	// cmd.Stdout = os.Stdout
+	// cmd.Stderr = os.Stderr
+
+	// cmd.Run()
 }

@@ -27,13 +27,13 @@ type Instance struct {
 	Name         string
 	PublicIp     string
 	PrivateIp    string
-	InstanceID   string
+	InstanceId   string
 	InstanceType string
 	KeyName      string
 }
 
-// func (inst Instance) String() string {
-// 	return inst.([]string)
+// func (inst *Instance) String() string {
+// 	return fmt.Println(inst.Name, inst.PublicIp, inst.PrivateIp, inst.InstanceId, inst.InstanceType, inst.KeyName)
 // }
 
 func Convert(aa interface{}) []string {
@@ -41,10 +41,10 @@ func Convert(aa interface{}) []string {
 }
 
 func (c *Client) GetRunInstances() ([]*Instance, error) {
-	params := &ec2.DescribeInstancesInput{
-		Filters: runFilter(),
+	req := &ec2.DescribeInstancesInput{
+		Filters: runningFilter(),
 	}
-	resp, err := c.DescribeInstances(params)
+	resp, err := c.DescribeInstances(req)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,14 @@ func (c *Client) GetRunInstances() ([]*Instance, error) {
 				publicIp = *inst.PublicIpAddress
 			}
 
-			instance := &Instance{getName(inst), publicIp, *inst.PrivateIpAddress, *inst.InstanceId, *inst.InstanceType, *inst.KeyName}
+			instance := &Instance{
+				Name:         getName(inst),
+				PublicIp:     publicIp,
+				PrivateIp:    *inst.PrivateIpAddress,
+				InstanceId:   *inst.InstanceId,
+				InstanceType: *inst.InstanceType,
+				KeyName:      *inst.KeyName,
+			}
 			instances = append(instances, instance)
 		}
 	}
@@ -65,7 +72,7 @@ func (c *Client) GetRunInstances() ([]*Instance, error) {
 	return instances, nil
 }
 
-func runFilter() []*ec2.Filter {
+func runningFilter() []*ec2.Filter {
 	return []*ec2.Filter{
 		&ec2.Filter{
 			Name: aws.String("instance-state-name"),
