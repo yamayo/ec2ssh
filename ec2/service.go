@@ -15,32 +15,29 @@ type Client struct {
 
 func NewClient(profile, region string) *Client {
 	cred := credentials.NewSharedCredentials("", profile)
-	sess, _ := session.NewSession(&aws.Config{
+	cfg := &aws.Config{
 		Credentials: cred,
-	})
+	}
+	if len(region) > 0 {
+		cfg.Region = aws.String(region)
+	}
+	sess, _ := session.NewSession(cfg)
 
-	svc := ec2.New(sess, &aws.Config{Region: aws.String(region)})
+	// svc := ec2.New(sess, &aws.Config{Region: aws.String(region)})
+	svc := ec2.New(sess)
 	return &Client{svc}
 }
 
 type Instance struct {
 	Name         string
-	PublicIp     string
-	PrivateIp    string
 	InstanceId   string
 	InstanceType string
+	PublicIp     string
+	PrivateIp    string
 	KeyName      string
 }
 
-// func (inst *Instance) String() string {
-// 	return fmt.Println(inst.Name, inst.PublicIp, inst.PrivateIp, inst.InstanceId, inst.InstanceType, inst.KeyName)
-// }
-
-func Convert(aa interface{}) []string {
-	return aa.([]string)
-}
-
-func (c *Client) GetRunInstances() ([]*Instance, error) {
+func (c *Client) GetRunningInstances() ([]*Instance, error) {
 	req := &ec2.DescribeInstancesInput{
 		Filters: runningFilter(),
 	}
@@ -52,17 +49,17 @@ func (c *Client) GetRunInstances() ([]*Instance, error) {
 	var instances []*Instance
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
-			var publicIp string
+			publicIp := "-"
 			if inst.PublicIpAddress != nil {
 				publicIp = *inst.PublicIpAddress
 			}
 
 			instance := &Instance{
 				Name:         getName(inst),
-				PublicIp:     publicIp,
-				PrivateIp:    *inst.PrivateIpAddress,
 				InstanceId:   *inst.InstanceId,
 				InstanceType: *inst.InstanceType,
+				PublicIp:     publicIp,
+				PrivateIp:    *inst.PrivateIpAddress,
 				KeyName:      *inst.KeyName,
 			}
 			instances = append(instances, instance)
@@ -90,12 +87,9 @@ func getName(inst *ec2.Instance) string {
 		}
 	}
 
-	var name = ""
 	if inst.PublicDnsName != nil {
-		name = *inst.PublicDnsName
-	} else if inst.PrivateDnsName != nil {
-		name = *inst.PrivateDnsName
+		return *inst.PublicDnsName
 	}
 
-	return name
+	return *inst.PrivateDnsName
 }
