@@ -16,12 +16,13 @@ const version = "x.x.x"
 var (
 	profile *string = flag.String("profile", "", "Use a specific profile from your credential file.")
 	region  *string = flag.String("region", "", "The region to use. Overrides AWS config/env settings.")
-	user    *string = flag.String("user", "ec2-user", "Login user name.")
-	keyPath *string = flag.String("identity file path", "~/.ssh", "Selects a file from which the identity (private key) for public key authentication is read.")
+	user    *string = flag.String("user", "ec2-user", "Specifies the user to login to EC2 machine.")
 )
 
 func main() {
 	flag.Parse()
+
+	os.Setenv("AWS_SDK_LOAD_CONFIG", "1")
 
 	ec2 := ec2.NewClient(*profile, *region)
 	instances, err := ec2.GetRunningInstances()
@@ -44,7 +45,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	inst := util.RetriveInstance(selected, instances)
-	cfg := ssh.ConfigFor(inst).WithUser(*user).WithIdentityFile(*keyPath, inst.KeyName)
+	inst := util.RetrieveInstance(selected, instances)
+	cfg := ssh.NewConfig(inst).WithUser(*user)
 	ssh.Run(cfg)
 }

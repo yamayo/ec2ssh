@@ -6,37 +6,31 @@ import (
 	"github.com/yamayo/ec2ssh/ec2"
 )
 
-const ServerAliasInterval = 200
+const (
+	ServerAliveInterval = "200"
+	PrivateKeyPath      = "~/.ssh"
+)
 
 type Config struct {
-	User         *string
 	Ip           string
+	User         string
 	IdentityFile string
 }
 
-func NewConfig() *Config {
-	return &Config{}
-}
-
-func (c *Config) WithUser(user string) *Config {
-	c.User = &user
-	return c
-}
-
-func (c *Config) WithIdentityFile(dir, file string) *Config {
-	c.IdentityFile = path.Join(dir, file+".pem")
-	return c
-}
-
-func ConfigFor(inst *ec2.Instance) *Config {
-	ip := inst.PublicIp
-	if ip == "-" {
-		ip = inst.PrivateIp
-	}
-
+func NewConfig(inst *ec2.Instance) *Config {
 	cfg := &Config{
-		Ip: ip,
+		Ip:           inst.Ip(),
+		IdentityFile: privateKeyPath(inst.KeyName),
 	}
 
 	return cfg
+}
+
+func (c *Config) WithUser(user string) *Config {
+	c.User = user
+	return c
+}
+
+func privateKeyPath(keyName string) string {
+	return path.Join(PrivateKeyPath, keyName+".pem")
 }

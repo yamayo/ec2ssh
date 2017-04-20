@@ -28,7 +28,7 @@ func Transform(instances []*ec2.Instance) string {
 	return buffer.String()
 }
 
-func RetriveInstance(selected string, instances []*ec2.Instance) *ec2.Instance {
+func RetrieveInstance(selected string, instances []*ec2.Instance) *ec2.Instance {
 	instanceId := strings.Fields(selected)[1]
 	for _, inst := range instances {
 		if inst.InstanceId == instanceId {

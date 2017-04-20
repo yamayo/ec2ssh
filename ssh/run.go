@@ -6,11 +6,12 @@ import (
 )
 
 func Run(cfg *Config) {
-	opts := []string{
+	args := []string{
 		"-i", cfg.IdentityFile,
-		*cfg.User + "@" + cfg.Ip,
+		cfg.User + "@" + cfg.Ip,
+		"-o", "ServerAliveInterval=" + ServerAliveInterval,
 	}
-	cmd := exec.Command("ssh", opts...)
+	cmd := exec.Command("ssh", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

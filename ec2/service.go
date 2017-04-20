@@ -14,16 +14,16 @@ type Client struct {
 }
 
 func NewClient(profile, region string) *Client {
-	cred := credentials.NewSharedCredentials("", profile)
-	cfg := &aws.Config{
-		Credentials: cred,
+	cfg := &aws.Config{}
+	if len(profile) > 0 {
+		cred := credentials.NewSharedCredentials("", profile)
+		cfg.WithCredentials(cred)
 	}
 	if len(region) > 0 {
-		cfg.Region = aws.String(region)
+		cfg.WithRegion(region)
 	}
 	sess, _ := session.NewSession(cfg)
 
-	// svc := ec2.New(sess, &aws.Config{Region: aws.String(region)})
 	svc := ec2.New(sess)
 	return &Client{svc}
 }
@@ -77,6 +77,14 @@ func runningFilter() []*ec2.Filter {
 				aws.String("running"),
 			},
 		},
+	}
+}
+
+func (inst *Instance) Ip() string {
+	if inst.PublicIp != "-" {
+		return inst.PublicIp
+	} else {
+		return inst.PrivateIp
 	}
 }
 
