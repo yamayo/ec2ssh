@@ -8,7 +8,7 @@ import (
 
 const (
 	ServerAliveInterval = "200"
-	PrivateKeyPath      = "~/.ssh"
+	PrivateKeyDir       = "~/.ssh"
 )
 
 type Config struct {
@@ -32,5 +32,5 @@ func (c *Config) WithUser(user string) *Config {
 }
 
 func privateKeyPath(keyName string) string {
-	return path.Join(PrivateKeyPath, keyName+".pem")
+	return path.Join(PrivateKeyDir, keyName+".pem")
 }

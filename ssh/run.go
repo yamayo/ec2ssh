@@ -11,6 +11,7 @@ func Run(cfg *Config) {
 		cfg.User + "@" + cfg.Ip,
 		"-o", "ServerAliveInterval=" + ServerAliveInterval,
 	}
+
 	cmd := exec.Command("ssh", args...)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
