@@ -19,8 +19,7 @@ On Linux, Unix download [binary]().
 $ ec2ssh
 ```
 
-
-### Command Line Options
+### Options
 #### `--profile`  
 Use a specific profile from your credential file. (default `default`)
 
@@ -33,13 +32,10 @@ Specifies the user to login to EC2 machine. (default `ec2-user`)
 #### `--version`  
 Show version.
 
-And  
-`Environment Variables`, `Named Profiles` support.
-
+## Usage example
+`Environment Variables`, `Named Profiles` support.  
 See: http://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-getting-started.html#cli-multiple-profiles
 
-
-## Usage example
 ```
 $ ec2ssh --profile myprofile --region ap-northeast-1
 or
