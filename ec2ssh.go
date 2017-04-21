@@ -14,13 +14,19 @@ import (
 const version = "x.x.x"
 
 var (
-	profile *string = flag.String("profile", "", "Use a specific profile from your credential file.")
-	region  *string = flag.String("region", "", "The region to use. Overrides AWS config/env settings.")
-	user    *string = flag.String("user", "ec2-user", "Specifies the user to login to EC2 machine.")
+	profile     *string = flag.String("profile", "", `Use a specific profile from your credential file. (default "default")`)
+	region      *string = flag.String("region", "", "The region to use. Overrides AWS config/env settings.")
+	user        *string = flag.String("user", "ec2-user", "Specifies the user to login to EC2 machine.")
+	showVersion *bool   = flag.Bool("version", false, "Show version")
 )
 
 func main() {
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Printf("ec2ssh version %s\n", version)
+		os.Exit(0)
+	}
 
 	os.Setenv("AWS_SDK_LOAD_CONFIG", "1")
 
@@ -46,6 +52,7 @@ func main() {
 	}
 
 	inst := util.RetrieveInstance(selected, instances)
+
 	cfg := ssh.NewConfig(inst).WithUser(*user)
 	ssh.Run(cfg)
 }
