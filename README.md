@@ -1,5 +1,6 @@
 # ec2ssh
 A tool to easily login to EC2 instances selected by [peco](https://github.com/peco/peco).  
+You can be used intuitively using an interface similar to AWS CLI.
 
 ## Demo
 
@@ -39,7 +40,7 @@ or
 $ ec2ssh --user centos
 ```
 
-And `Environment Variables`, `Named Profiles` support.  
+Also supports Environment Variables.  
 ```
 $ AWS_ACCESS_KEY_ID=XXX AWS_SECRET_ACCESS_KEY=XXX AWS_REGION=us-east-1 ec2ssh
 or
@@ -56,12 +57,6 @@ Just put a in the same way as AWS CLI.
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY_ID
 aws_secret_access_key = YOUR_SECRET_ACCESS_KEY 
-region = YOUR_REGION
-```
-
-`~/.aws/config`  
-```
-[default]
 region = YOUR_REGION
 ```
 
