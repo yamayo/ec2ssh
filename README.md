@@ -16,7 +16,7 @@ On Linux, Unix download [binary]().
 
 ## Usage
 ```
-$ ec2ssh
+$ ec2ssh [option]
 ```
 
 ### Options
@@ -32,15 +32,15 @@ Specifies the user to login to EC2 machine. (default `ec2-user`)
 #### `--version`  
 Show version.
 
-## Usage example
-`Environment Variables`, `Named Profiles` support.  
-See: http://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-getting-started.html#cli-multiple-profiles
-
+### Usage Example
 ```
 $ ec2ssh --profile myprofile --region ap-northeast-1
 or
-$ AWS_ACCESS_KEY_ID=XXX AWS_SECRET_ACCESS_KEY=XXX AWS_REGION=us-east-1 ec2ssh
-or
 $ ec2ssh --user centos
-...
 ```
+
+`Environment Variables`, `Named Profiles` support.  
+```
+$ AWS_ACCESS_KEY_ID=XXX AWS_SECRET_ACCESS_KEY=XXX AWS_REGION=us-east-1 ec2ssh
+```
+See: http://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-getting-started.html#cli-multiple-profiles
