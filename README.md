@@ -32,14 +32,14 @@ Specifies the user to login to EC2 machine. (default `ec2-user`)
 #### `--version`  
 Show version.
 
-### Usage Example
+## Usage Example
 ```
 $ ec2ssh --profile myprofile --region ap-northeast-1
 or
 $ ec2ssh --user centos
 ```
 
-`Environment Variables`, `Named Profiles` support.  
+And `Environment Variables`, `Named Profiles` support.  
 ```
 $ AWS_ACCESS_KEY_ID=XXX AWS_SECRET_ACCESS_KEY=XXX AWS_REGION=us-east-1 ec2ssh
 ```
