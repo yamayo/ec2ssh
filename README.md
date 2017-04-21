@@ -46,3 +46,23 @@ or
 $ AWS_DEFAULT_PROFILE=myprofile AWS_DEFAULT_REGION=us-east-1 ec2ssh
 ```
 See: http://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-getting-started.html#cli-multiple-profiles
+
+## Setup
+You may already be doing it.  
+Just put a in the same way as AWS CLI.
+
+`~/.aws/credentials`  
+```
+[default]
+aws_access_key_id = YOUR_ACCESS_KEY_ID
+aws_secret_access_key = YOUR_SECRET_ACCESS_KEY 
+region = YOUR_REGION
+```
+
+`~/.aws/config`  
+```
+[default]
+region = YOUR_REGION
+```
+
+And, you store the private key for login to EC2 in `~/.ssh`.
