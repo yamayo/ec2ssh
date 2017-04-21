@@ -21,16 +21,16 @@ $ ec2ssh
 
 
 ### Command Line Options
-`--profile`  
-Use a specific profile from your credential file. (default "default")
+#### `--profile`  
+Use a specific profile from your credential file. (default `default`)
 
-`--region`    
+#### `--region`  
 The region to use. Overrides AWS config/env settings.
 
-`--user`  
-Specifies the user to login to EC2 machine. (default "ec2-user")
+#### `--user`  
+Specifies the user to login to EC2 machine. (default `ec2-user`)
 
-`--version`  
+#### `--version`  
 Show version.
 
 And  
