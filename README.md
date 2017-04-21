@@ -42,5 +42,7 @@ $ ec2ssh --user centos
 And `Environment Variables`, `Named Profiles` support.  
 ```
 $ AWS_ACCESS_KEY_ID=XXX AWS_SECRET_ACCESS_KEY=XXX AWS_REGION=us-east-1 ec2ssh
+or
+$ AWS_DEFAULT_PROFILE=myprofile AWS_DEFAULT_REGION=us-east-1 ec2ssh.go
 ```
 See: http://docs.aws.amazon.com/ja_jp/cli/latest/userguide/cli-chap-getting-started.html#cli-multiple-profiles
