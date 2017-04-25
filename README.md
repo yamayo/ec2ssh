@@ -58,10 +58,14 @@ output = json
 ```
 
 To use a named profile other than `default`, add the `--profile` option to your command.  
-`$ ec2ssh --profile user2`
+```
+$ ec2ssh --profile user2
+```
 
 Or you can specify it with an environment variable as `AWS_DEFAULT_PROFILE`.  
-`$ export AWS_DEFAULT_PROFILE=user2`
+```
+$ export AWS_DEFAULT_PROFILE=user2
+```
 
 
 #### Environment Variables
