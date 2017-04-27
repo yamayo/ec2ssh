@@ -50,11 +50,9 @@ aws_secret_access_key = xxxxxxxxxx
 ```
 [default]
 region = us-west-2
-output = json
 
 [profile user2]
 region = us-east-1
-output = json
 ```
 
 To use a named profile other than `default`, add the `--profile` option to your command.  
