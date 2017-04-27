@@ -8,7 +8,7 @@ $ brew tap yamayo/ec2ssh
 $ brew install ec2ssh
 ```
 
-On Linux, download [binary]().
+On Linux, download [binary](https://github.com/yamayo/ec2ssh/releases).
 
 ## Usage
 ```
