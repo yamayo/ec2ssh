@@ -11,7 +11,7 @@ import (
 	"github.com/yamayo/ec2ssh/util"
 )
 
-const version = "x.x.x"
+var version = "x.x.x"
 
 var (
 	profile     *string = flag.String("profile", "", `Use a specific profile from your credential file. (default "default")`)
@@ -24,7 +24,7 @@ func main() {
 	flag.Parse()
 
 	if *showVersion {
-		fmt.Printf("ec2ssh version %s\n", version)
+		fmt.Println(version)
 		os.Exit(0)
 	}
 

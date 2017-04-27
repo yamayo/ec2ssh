@@ -67,8 +67,9 @@ Or you can specify it with an environment variable as `AWS_DEFAULT_PROFILE`.
 $ export AWS_DEFAULT_PROFILE=user2
 ```
 
-
 #### Environment Variables
+ec2ssh supports the following environment variables.
+
 - **AWS_ACCESS_KEY_ID** – AWS access key.
 
 - **AWS_SECRET_ACCESS_KEY** – AWS secret key.
