@@ -1,15 +1,14 @@
 package ssh
 
 import (
+	"log"
+	"os/user"
 	"path"
 
 	"github.com/yamayo/ec2ssh/ec2"
 )
 
-const (
-	ServerAliveInterval = "200"
-	PrivateKeyDir       = "~/.ssh"
-)
+const ServerAliveInterval = "200"
 
 type Config struct {
 	Ip           string
@@ -32,5 +31,9 @@ func (c *Config) WithUser(user string) *Config {
 }
 
 func privateKeyPath(keyName string) string {
-	return path.Join(PrivateKeyDir, keyName+".pem")
+	user, err := user.Current()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return path.Join(user.HomeDir, ".ssh", keyName+".pem")
 }
