@@ -14,11 +14,17 @@ import (
 var version = "x.x.x"
 
 var (
-	profile     *string = flag.String("profile", "", `Use a specific profile from your credential file. (default "default")`)
+	profile     *string = flag.String("profile", "", `Use a specific profile from your credential file.`)
 	region      *string = flag.String("region", "", "The region to use. Overrides AWS config/env settings.")
 	user        *string = flag.String("user", "ec2-user", "Specifies the user to login to EC2 machine.")
 	showVersion *bool   = flag.Bool("version", false, "Show version")
 )
+
+func init() {
+	flag.StringVar(profile, "p", "", `Use a specific profile from your credential file. (shorthand)`)
+	flag.StringVar(region, "r", "", "The region to use. Overrides AWS config/env settings. (shorthand)")
+	flag.StringVar(user, "u", "ec2-user", "Specifies the user to login to EC2 machine. (shorthand)")
+}
 
 func main() {
 	flag.Parse()
