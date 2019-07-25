@@ -46,12 +46,16 @@ func (c *Client) GetRunningInstances() ([]*Instance, error) {
 		return nil, err
 	}
 
-	var instances []*Instance
+	instances := make([]*Instance, len(resp.Reservations))
 	for idx, _ := range resp.Reservations {
 		for _, inst := range resp.Reservations[idx].Instances {
 			publicIp := "-"
 			if inst.PublicIpAddress != nil {
 				publicIp = *inst.PublicIpAddress
+			}
+			keyName := ""
+			if inst.KeyName != nil {
+				keyName = *inst.KeyName
 			}
 
 			instance := &Instance{
@@ -60,9 +64,9 @@ func (c *Client) GetRunningInstances() ([]*Instance, error) {
 				InstanceType: *inst.InstanceType,
 				PublicIp:     publicIp,
 				PrivateIp:    *inst.PrivateIpAddress,
-				KeyName:      *inst.KeyName,
+				KeyName:      keyName,
 			}
-			instances = append(instances, instance)
+			instances[idx] = instance
 		}
 	}
 
